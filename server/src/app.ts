@@ -1,5 +1,6 @@
-import express from "express";
-import cors from "cors";
+import express from 'express';
+import  { type Request, type Response } from 'express';
+import cors from 'cors';
 import 'dotenv/config';
 
 
@@ -10,7 +11,7 @@ const PORT = process.env.PORT || 5000;
 app.use(cors()); // Allows your React app (usually on port 3000 or 5173) to talk to this server
 app.use(express.json()); // Allow server to read json.
 
-app.get('/api/status', (req,res)=>{
+app.get('/api/status', (req:Request, res:Response)=>{
     res.json({message:"Backend is connected to React!"});
 })
 
