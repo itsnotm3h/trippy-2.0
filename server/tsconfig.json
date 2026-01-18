@@ -1,34 +1,53 @@
 {
   "compilerOptions": {
-    /* File Layout */
-    "rootDir": "./src",
-    "outDir": "./dist",
-
-    /* Environment Settings */
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
     "target": "ESNext",
-    "esModuleInterop": true,  // allow imports 
-    "forceConsistentCasingInFileNames": true,
-
-    /* Other Outputs */
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-
-    /* Stricter Typechecking Options */
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    
+    /* Allocation & Output */
+    "rootDir": "src",           // 👈 Tells TS: "All my code is here"
+    "outDir": "dist",          // 👈 Tells TS: "Put compiled JS here"
+    
     "strict": true,
-
-    /* Recommended Options */
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true, // so that when it exports to .js it will not include type and create ghost import.
-    "isolatedModules": true,
-    "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
+    "esModuleInterop": true,
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*"],     // Ensures only files in src are compiled
   "exclude": ["node_modules", "dist"]
 }
+// {
+//   "compilerOptions": {
+//     /* File Layout */
+//     "rootDir": "./src",
+//     "outDir": "./dist",
+
+//     /* Environment Settings */
+//     "module": "NodeNext",
+//     "moduleResolution": "bundler",
+//     "target": "ESNext",
+//     "allowImportingTsExtensions": false,
+//     "esModuleInterop": true,  // allow imports 
+//     "forceConsistentCasingInFileNames": true,
+//     "noEmit": false,
+
+//     /* Other Outputs */
+//     "sourceMap": true,
+//     "declaration": true,
+//     "declarationMap": true,
+
+//     /* Stricter Typechecking Options */
+//     "noUncheckedIndexedAccess": true,
+//     "exactOptionalPropertyTypes": true,
+//     "strict": true,
+
+//     /* Recommended Options */
+//     "jsx": "react-jsx",
+//     "verbatimModuleSyntax": true, // so that when it exports to .js it will not include type and create ghost import.
+//     "isolatedModules": true,
+//     "noUncheckedSideEffectImports": true,
+//     "moduleDetection": "force",
+//     "skipLibCheck": true,
+//   },
+//   "include": ["src/**/*"],
+//   "exclude": ["node_modules", "dist"]
+// }
