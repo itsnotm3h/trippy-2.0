@@ -6,6 +6,7 @@ jspm_packages/
 build/
 dist/
 out/
+*.tsbuildinfo
 
 # Environment Variables (SENSITIVE)
 .env
@@ -20,6 +21,9 @@ yarn-debug.log*
 yarn-error.log*
 logs
 *.log
+
+# Testing
+coverage/
 
 # Editor-specific (VS Code, JetBrains)
 .vscode/

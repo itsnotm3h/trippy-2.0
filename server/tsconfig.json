@@ -23,7 +23,7 @@
 
     /* Recommended Options */
     "jsx": "react-jsx",
-    "verbatimModuleSyntax": true, // so that no import type is needed for Request/Response types.
+    "verbatimModuleSyntax": true, // so that when it exports to .js it will not include type and create ghost import.
     "isolatedModules": true,
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
