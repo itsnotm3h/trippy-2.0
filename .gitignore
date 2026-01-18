@@ -8,6 +8,7 @@ dist/
 out/
 *.tsbuildinfo
 reference.txt
+todolist.txt
 
 # Environment Variables (SENSITIVE)
 .env
