@@ -9,7 +9,7 @@ const requireEnv = (name:string): string =>{
 
 // Export the values for the db.ts to prevent type error. 
 export const CONFIG = {
-    DB_HOST: process.env.DB_HOST || '127.0.0.1', // Safe default for host
+    DB_HOST: process.env.DB_HOST || 'localhost', // Safe default for host
     DB_USER: requireEnv('DB_USER'),              // Required (No default)
     DB_PASSWORD: requireEnv('DB_PASSWORD'),      // Required (No default)
     DB_NAME: requireEnv('DB_NAME'),              // Required (No default)
