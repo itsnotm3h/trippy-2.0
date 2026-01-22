@@ -11,9 +11,6 @@ const checkConnection = async () => {
     console.log('✅ Success! Connection established.');
 
     // Let's verify exactly which database and user we are using
-    const [results]: any = await sequelize.query("SELECT USER() as user, DATABASE() as db");
-    console.log(`👤 Logged in as: ${results[0].user}`);
-    console.log(`📂 Database name: ${results[0].db}`);
 
   } catch (error: any) {
     console.error('❌ Connection Failed!');
