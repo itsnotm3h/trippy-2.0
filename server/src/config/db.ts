@@ -1,15 +1,27 @@
-import mariadb from 'mariadb';
 import { CONFIG } from './env'; // No extension!
+import { Sequelize } from 'sequelize';
 
-const pool = mariadb.createPool({
-    host: CONFIG.DB_HOST,
-    user: CONFIG.DB_USER,
-    password: CONFIG.DB_PASSWORD,
-    database: CONFIG.DB_NAME,
-    port: CONFIG.DB_PORT,
-    connectionLimit: 10, // Explicitly a number, no quotes
+const sequelize = new Sequelize(
+    CONFIG.DB_NAME!,
+    CONFIG.DB_USER!,
+    CONFIG.DB_PASSWORD!,
+    {
+        host: CONFIG.DB_HOST,
+        port:Number(CONFIG.DB_PORT),
+        dialect: 'mariadb',
+        dialectOptions:{allowPublicKeyRetrieval: true,},
+        logging: console.log,
+        define: {
+            underscored: true,
+        },
+        pool: {
+            max: 5,
+            min: 0,
+            acquire: 30000,
+            idle: 10000
+        }
+    }
 
-});
+)
 
-
-export default pool;
+export default sequelize;

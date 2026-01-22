@@ -1,9 +1,9 @@
 import { Router } from "express";
-import { getTrips } from "../controller/tripController";
+import { getTrips } from "./tripController";
 
 const router = Router();
 
-router.get("/",getTrips);
+router.get("",getTrips);
 
 export default router;
 

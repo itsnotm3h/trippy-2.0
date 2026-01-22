@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import * as TripService from '../services/tripService';
+import { TripService } from './tripService';
 
 export const getTrips = async (req: Request, res: Response) => {
     try {
