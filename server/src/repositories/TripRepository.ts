@@ -1,6 +1,6 @@
 import { Op, Sequelize } from "sequelize";
 import { Trip, Users } from "../models";
-import { TripEditType } from "../validators/trip.validator";
+import { TripEditType, TripType } from "../validators/trip.validator";
 
 export const TripRepository = {
   findAll: async (userId: number) => {
@@ -44,7 +44,11 @@ export const TripRepository = {
       logging: true,
     });
   },
-  updateTripSetting: async (tripId: number, edits: TripEditType) => {
+  createTrip: async (data:TripType)=>{
+    return await Trip.create({...data})
+
+  },
+  updateTrip: async (tripId: number, edits: TripEditType) => {
     return await Trip.update(edits, { where: { tripId } });
   },
 };

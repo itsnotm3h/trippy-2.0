@@ -41,7 +41,7 @@ export const getTripById = async (req: AuthRequest, res: Response) => {
  * @param req the request
  * @param res the response
  */
-export const updateTripSetting = async (req: AuthRequest, res: Response) => {
+export const updateTrip = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
     const tripRole = req.tripRole ?? "";
@@ -65,7 +65,7 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
     }
 
     const edits = validate.data;
-    const result = await TripService.updateTripSetting(tripId, edits);
+    const result = await TripService.updateTrip(tripId, edits);
 
     res.status(200).json({
       message: `${result.message} Trip(id:${tripId})`,
@@ -82,7 +82,7 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
 
 export const createTrip = async (req: AuthRequest, res: Response) => {
   try {
-    const { tripId } = TripIdSchema.parse({ ...req.params });
+    const {userId} = req.dbUser;
 
     const tripRole = req.tripRole ?? "";
 
@@ -94,7 +94,7 @@ export const createTrip = async (req: AuthRequest, res: Response) => {
         .status(401)
         .json({ message: "No field provided for updates." });
 
-    const newTrip = TripSchema.safeParse({ ...req.body });
+    const newTrip = TripSchema.safeParse({ ...req.body, leaderId:userId });
 
     if (!newTrip.success) {
       return res
@@ -102,7 +102,10 @@ export const createTrip = async (req: AuthRequest, res: Response) => {
         .json({ message: newTrip.error.message.toString() });
     }
 
-    // const result = await TripService.createTrip();
+    await TripService.createTrip(newTrip.data);
+
+    return res.status(200).json({message:"Created new trips successfully"})
+
   } catch (error: any) {
     console.log(error.message);
     res.status(500).json({ message: "Unexpected Error" });
