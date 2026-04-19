@@ -2,18 +2,18 @@ import { z } from "zod";
 import countries from "i18n-iso-countries";
 import BigNumber from "bignumber.js";
 
-export const TripSchema = z.object({
-  tripId: z.coerce.number(),
-  title: z.string(),
-  type: z.string(),
-  country: z.string(),
-  currencyRate: z.number(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
-  leaderId: z.coerce.number(),
-  isActive: z.boolean(),
-  isDeleted: z.boolean(),
-});
+// export const TripSchema = z.object({
+//   tripId: z.coerce.number(),
+//   title: z.string(),
+//   type: z.string(),
+//   country: z.string(),
+//   currencyRate: z.number(),
+//   startDate: z.coerce.date(),
+//   endDate: z.coerce.date(),
+//   leaderId: z.coerce.number(),
+//   isActive: z.boolean(),
+//   isDeleted: z.boolean(),
+// });
 
 export const TripIdSchema = z.object({
   tripId: z.coerce.number(),
@@ -27,41 +27,40 @@ export const UserIdSchema = z.object({
 //type: number either SOLO or GROUP.
 //country: Check that country is valid.
 //startDate and endDate: start can never be later than end date.
-export const TripEditsSchema = z
-  .object({
-    title: z
-      .string()
-      .min(10, "INVALID_TITLE_LENGTH_SHORT")
-      .max(150, "INVALID_TITLE_LENGTH_LONG")
-      .optional(),
-    type: z.enum(["SOLO", "GROUP"]).optional(),
-    country: z
-      .string()
-      .length(3, "INVALID_LENGTH")
-      .transform((val) => val.toUpperCase())
-      .refine(
-        (val) => {
-          return countries.isValid(val);
-        },
-        { message: "INVALID_COUNTRY_CODE" },
-      )
-      .optional(),
-    currencyRate: z
-      .number()
-      .positive("NEGATIVE_VALUE")
-      .refine(
-        (val) => {
-          return new BigNumber(val).isFinite();
-        },
-        { message: "INVALID_RATE" },
-      )
-      .transform((val) => new BigNumber(val).toFixed(3))
-      .optional(),
-    startDate: z.coerce.date().optional(),
-    endDate: z.coerce.date().optional(),
-    isActive: z.boolean("INVALID_VALUE").optional(),
-    isDeleted: z.boolean("INVALID_VALUE").optional(),
-  })
+export const TripSchema = z.object({
+  tripId: z.coerce.number(),
+  title: z
+    .string()
+    .min(10, "INVALID_TITLE_LENGTH_SHORT")
+    .max(150, "INVALID_TITLE_LENGTH_LONG"),
+  type: z.enum(["SOLO", "GROUP"]),
+  country: z
+    .string()
+    .length(3, "INVALID_LENGTH")
+    .transform((val) => val.toUpperCase())
+    .refine(
+      (val) => {
+        return countries.isValid(val);
+      },
+      { message: "INVALID_COUNTRY_CODE" },
+    ),
+  currencyRate: z
+    .number()
+    .positive("NEGATIVE_VALUE")
+    .refine(
+      (val) => {
+        return new BigNumber(val).isFinite();
+      },
+      { message: "INVALID_RATE" },
+    )
+    .transform((val) => new BigNumber(val).toFixed(3)),
+  startDate: z.coerce.date(),
+  endDate: z.coerce.date(),
+  isActive: z.boolean("INVALID_VALUE"),
+  isDeleted: z.boolean("INVALID_VALUE"),
+});
+
+export const PartialTripEditsSchema = TripSchema.partial()
   .refine(
     (data) => {
       //To cater to if the data does not exist for both.
@@ -80,4 +79,5 @@ export const TripEditsSchema = z
     { message: "START_DATE_LATER" },
   );
 
-export type TripEditType = z.infer<typeof TripEditsSchema>;
+export type TripEditType = z.infer<typeof PartialTripEditsSchema>;
+export type TripType = z.infer<typeof TripSchema>;

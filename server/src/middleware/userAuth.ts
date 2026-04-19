@@ -61,10 +61,12 @@ export const identifyTripRole = async (
 ) => {
   try {
     const { tripId } = req.params;
+
     const userId = req.dbUser.userId;
 
-    if (userId === undefined || tripId === undefined)
+    if (userId === undefined || tripId === undefined) {
       return next(new AppError("Error authorised entry", 400));
+    }
 
     const isLeader = await Trip.findOne({
       where: {

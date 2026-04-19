@@ -10,7 +10,6 @@ export const TripService = {
     return await TripRepository.findByTripId(tripId);
   },
   updateTripSetting: async (tripId: number, edits: TripEditType) => {
-
     const trip = await Trip.findByPk(tripId);
     if (!trip) throw new Error("Trip does not exist");
 

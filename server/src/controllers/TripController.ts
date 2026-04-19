@@ -1,6 +1,10 @@
 import { Response } from "express";
 import { TripService } from "../services/TripService";
-import { TripEditsSchema, TripIdSchema } from "../validators/trip.validator";
+import {
+  PartialTripEditsSchema,
+  TripIdSchema,
+  TripSchema,
+} from "../validators/trip.validator";
 import { AuthRequest } from "../schema/authSchema";
 
 export const getUserTrips = async (req: AuthRequest, res: Response) => {
@@ -16,6 +20,7 @@ export const getUserTrips = async (req: AuthRequest, res: Response) => {
 export const getTripById = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
+    console.log(tripId);
     const tripRole = req.tripRole;
 
     if (tripRole == "")
@@ -39,7 +44,6 @@ export const getTripById = async (req: AuthRequest, res: Response) => {
 export const updateTripSetting = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
-
     const tripRole = req.tripRole ?? "";
 
     //Only leaders can make changes to trip setting.
@@ -52,7 +56,7 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
         .status(401)
         .json({ message: "No field provided for updates." });
 
-    const validate = TripEditsSchema.safeParse({ ...req.body });
+    const validate = PartialTripEditsSchema.safeParse({ ...req.body });
 
     if (!validate.success) {
       return res
@@ -72,6 +76,35 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
       return res.status(400).json({ message: error.message });
     }
 
+    res.status(500).json({ message: "Unexpected Error" });
+  }
+};
+
+export const createTrip = async (req: AuthRequest, res: Response) => {
+  try {
+    const { tripId } = TripIdSchema.parse({ ...req.params });
+
+    const tripRole = req.tripRole ?? "";
+
+    if (tripRole === "")
+      return res.status(401).json({ message: "Unauthorised to create a trip" });
+
+    if (req.body === undefined)
+      return res
+        .status(401)
+        .json({ message: "No field provided for updates." });
+
+    const newTrip = TripSchema.safeParse({ ...req.body });
+
+    if (!newTrip.success) {
+      return res
+        .status(400)
+        .json({ message: newTrip.error.message.toString() });
+    }
+
+    // const result = await TripService.createTrip();
+  } catch (error: any) {
+    console.log(error.message);
     res.status(500).json({ message: "Unexpected Error" });
   }
 };
