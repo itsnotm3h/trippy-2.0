@@ -12,7 +12,7 @@ const finalMessage = {
 } as const;
 
 export const TripMemberService = {
-  upsertTripMember: async (inviteList: TripMemberListType,displayName:string) => {
+  upsertTripMember: async (inviteList: TripMemberListType, displayName:string) => {
     const finalResult = {
       successList: [] as number[],
       failedIdList: [] as { userId: number; error: string }[],
@@ -33,24 +33,18 @@ export const TripMemberService = {
             status,
           });
 
-          await NotificationRepositry.createNotification({
-            tripId,
-            userId,
-            type: "INVITE",
-            message: finalMessage[status]({
-              displayName,
-              tripTitle: currentTrip?.title,
-            }),
-            isRead: false,
-          });
-
           finalResult.successList.push(userId);
         });
+
       } catch (error: any) {
         finalResult.failedIdList.push({ userId, error: error.message });
         console.log(error.message);
       }
     }
+    
+    return finalResult;
+
+    
 
     // use upsert, for service will loop through the list to update the trip members.
   },

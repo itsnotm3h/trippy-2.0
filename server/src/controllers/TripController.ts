@@ -82,19 +82,8 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
 
 export const createTrip = async (req: AuthRequest, res: Response) => {
   try {
-    const { tripId } = TripIdSchema.parse({ ...req.params });
-
-    const tripRole = req.tripRole ?? "";
-
-    if (tripRole === "")
-      return res.status(401).json({ message: "Unauthorised to create a trip" });
-
-    if (req.body === undefined)
-      return res
-        .status(401)
-        .json({ message: "No field provided for updates." });
-
-    const newTrip = TripSchema.safeParse({ ...req.body });
+    const userInfo = req.dbUser?? "";
+    const newTrip = TripSchema.safeParse({ ...req.body, leaderId:userInfo.userId});
 
     if (!newTrip.success) {
       return res
@@ -102,7 +91,9 @@ export const createTrip = async (req: AuthRequest, res: Response) => {
         .json({ message: newTrip.error.message.toString() });
     }
 
-    // const result = await TripService.createTrip();
+    const result = await TripService.createTrip(newTrip.data,userInfo);
+
+    
   } catch (error: any) {
     console.log(error.message);
     res.status(500).json({ message: "Unexpected Error" });

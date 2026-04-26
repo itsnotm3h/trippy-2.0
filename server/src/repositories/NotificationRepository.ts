@@ -1,5 +1,5 @@
 import { Notifications } from "@/models";
-import { NotificationType } from "@/validators/Notification.validators";
+import { NotificationType } from "@/validators/notification.validators";
 import { Transaction } from "sequelize";
 
 export const NotificationRepositry = {
@@ -20,3 +20,4 @@ export const NotificationRepositry = {
     });
   },
 };
+ 

@@ -1,6 +1,11 @@
 import { z } from "zod";
 import countries from "i18n-iso-countries";
 import BigNumber from "bignumber.js";
+import {
+  TripMemberFormSchema,
+  TripMemberList,
+  TripMemberSchema,
+} from "./tripMembers.validator";
 
 // export const TripSchema = z.object({
 //   tripId: z.coerce.number(),
@@ -44,6 +49,8 @@ export const TripSchema = z.object({
       },
       { message: "INVALID_COUNTRY_CODE" },
     ),
+  tripMemberList: z.array(TripMemberFormSchema),
+  leaderId: z.coerce.number(),
   currencyRate: z
     .number()
     .positive("NEGATIVE_VALUE")

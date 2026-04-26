@@ -1,5 +1,10 @@
 import z from "zod";
 
+export enum NOTIFICATION_TYPE {
+  INVITE = "INVITE",
+  INFO = "INFO",
+}
+
 export const NotificationSchema = z.object({
   tripId: z.coerce.number(),
   userId: z.coerce.number(),

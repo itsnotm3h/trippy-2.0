@@ -1,8 +1,11 @@
-import { Op, Sequelize } from "sequelize";
+import { Op, Sequelize, Transaction } from "sequelize";
 import { Trip, Users } from "../models";
 import { TripEditType } from "../validators/trip.validator";
 
 export const TripRepository = {
+  createTrip: async (newTrip: TripEditType, t: Transaction) => {
+    return await Trip.create({ ...newTrip }, { transaction: t });
+  },
   findAll: async (userId: number) => {
     return await Trip.findAll({
       include: [
