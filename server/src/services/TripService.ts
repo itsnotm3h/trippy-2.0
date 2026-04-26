@@ -14,7 +14,10 @@ export const TripService = {
   getTripById: async (tripId: number) => {
     return await TripRepository.findByTripId(tripId);
   },
-  updateTripSetting: async (tripId: number, edits: TripEditType) => {
+  createTrip:async (data:TripType)=>{
+    return await TripRepository.createTrip(data);
+  },
+  updateTrip: async (tripId: number, edits: TripEditType) => {
     const trip = await Trip.findByPk(tripId);
     if (!trip) throw new Error("Trip does not exist");
 
@@ -30,7 +33,7 @@ export const TripService = {
         throw new Error("The trip has expenses, unable to change trip type");
     }
 
-    const [affectedRows] = await TripRepository.updateTripSetting(
+    const [affectedRows] = await TripRepository.updateTrip(
       tripId,
       edits,
     );

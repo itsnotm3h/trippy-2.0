@@ -33,7 +33,7 @@ export const UserIdSchema = z.object({
 //country: Check that country is valid.
 //startDate and endDate: start can never be later than end date.
 export const TripSchema = z.object({
-  tripId: z.coerce.number(),
+  // tripId: z.coerce.number(),
   title: z
     .string()
     .min(10, "INVALID_TITLE_LENGTH_SHORT")
@@ -63,6 +63,7 @@ export const TripSchema = z.object({
     .transform((val) => new BigNumber(val).toFixed(3)),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
+  leaderId: z.coerce.number(),
   isActive: z.boolean("INVALID_VALUE"),
   isDeleted: z.boolean("INVALID_VALUE"),
 });

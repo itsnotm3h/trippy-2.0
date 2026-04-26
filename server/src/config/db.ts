@@ -1,7 +1,17 @@
 import { CONFIG } from './env'; // No extension!
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize(
+const isTest = process.env.NODE_ENV === 'test'
+
+const sequelize = isTest? new Sequelize({
+    dialect:'sqlite',
+    storage:':memory:',
+    logging:false,
+    define:{
+        underscored:true,
+    }
+
+}) : new Sequelize(
     CONFIG.DB_NAME!,
     CONFIG.DB_USER!,
     CONFIG.DB_PASSWORD!,

@@ -1,4 +1,4 @@
-import { Model, DataTypes, DecimalDataType } from "sequelize"
+import { Model, DataTypes } from "sequelize"
 import sequelize from "../config/db";
 
 class Notifications extends Model {

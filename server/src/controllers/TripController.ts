@@ -41,7 +41,7 @@ export const getTripById = async (req: AuthRequest, res: Response) => {
  * @param req the request
  * @param res the response
  */
-export const updateTripSetting = async (req: AuthRequest, res: Response) => {
+export const updateTrip = async (req: AuthRequest, res: Response) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
     const tripRole = req.tripRole ?? "";
@@ -65,7 +65,7 @@ export const updateTripSetting = async (req: AuthRequest, res: Response) => {
     }
 
     const edits = validate.data;
-    const result = await TripService.updateTripSetting(tripId, edits);
+    const result = await TripService.updateTrip(tripId, edits);
 
     res.status(200).json({
       message: `${result.message} Trip(id:${tripId})`,
