@@ -1,13 +1,20 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../config/db";
 
+export enum STATUS_TYPE {
+  PENDING = "PENDING",
+  ACTIVE = "ACTIVE",
+  DEACTIVATED = "DEACTIVATED",
+}
+
 class Users extends Model {
   declare userId: number;
-  declare name: string;
   declare password: string;
   declare email: string;
   declare authId: string;
   declare displayName: string;
+  declare status: STATUS_TYPE;
+  declare invitedBy: string;
   static associate(models: any) {
     Users.hasMany(models.Expenses, {
       foreignKey: "payerId",
@@ -88,6 +95,16 @@ Users.init(
     authId: {
       type: DataTypes.STRING,
       field: "auth_id",
+    },
+    invitedBy: {
+      type: DataTypes.INTEGER,
+      field: "invited_by",
+      allowNull: true,
+    },
+    status: {
+      type: DataTypes.ENUM(...Object.values(STATUS_TYPE)),
+      field: "status",
+      allowNull: false,
     },
   },
   {

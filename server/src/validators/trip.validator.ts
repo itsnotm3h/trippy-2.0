@@ -1,24 +1,7 @@
 import { z } from "zod";
 import countries from "i18n-iso-countries";
 import BigNumber from "bignumber.js";
-import {
-  TripMemberFormSchema,
-  TripMemberList,
-  TripMemberSchema,
-} from "./tripMembers.validator";
-
-// export const TripSchema = z.object({
-//   tripId: z.coerce.number(),
-//   title: z.string(),
-//   type: z.string(),
-//   country: z.string(),
-//   currencyRate: z.number(),
-//   startDate: z.coerce.date(),
-//   endDate: z.coerce.date(),
-//   leaderId: z.coerce.number(),
-//   isActive: z.boolean(),
-//   isDeleted: z.boolean(),
-// });
+import { TripMemberFormSchema } from "./tripMembers.validator";
 
 export const TripIdSchema = z.object({
   tripId: z.coerce.number(),
@@ -63,7 +46,6 @@ export const TripSchema = z.object({
     .transform((val) => new BigNumber(val).toFixed(3)),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
-  leaderId: z.coerce.number(),
   isActive: z.boolean("INVALID_VALUE"),
   isDeleted: z.boolean("INVALID_VALUE"),
 });

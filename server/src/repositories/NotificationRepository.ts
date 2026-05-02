@@ -11,13 +11,15 @@ export const NotificationRepositry = {
     txn?: Transaction | null,
   ) => {
     const { tripId, userId, type, message, isRead } = data;
-    await Notifications.create({
-      tripId,
-      userId,
-      type,
-      message,
-      isRead,
-    });
+    await Notifications.create(
+      {
+        tripId,
+        userId,
+        type,
+        message,
+        isRead,
+      },
+      { transaction: txn },
+    );
   },
 };
- 

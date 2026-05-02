@@ -82,8 +82,11 @@ export const updateTrip = async (req: AuthRequest, res: Response) => {
 
 export const createTrip = async (req: AuthRequest, res: Response) => {
   try {
-    const userInfo = req.dbUser?? "";
-    const newTrip = TripSchema.safeParse({ ...req.body, leaderId:userInfo.userId});
+    const userInfo = req.dbUser ?? "";
+    const newTrip = TripSchema.safeParse({
+      ...req.body,
+      leaderId: userInfo.userId,
+    });
 
     if (!newTrip.success) {
       return res
@@ -91,9 +94,8 @@ export const createTrip = async (req: AuthRequest, res: Response) => {
         .json({ message: newTrip.error.message.toString() });
     }
 
-    const result = await TripService.createTrip(newTrip.data,userInfo);
-
-    
+    const result = await TripService.createTrip(newTrip.data, userInfo);
+    res.status(200).json({ result });
   } catch (error: any) {
     console.log(error.message);
     res.status(500).json({ message: "Unexpected Error" });

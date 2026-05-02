@@ -1,11 +1,19 @@
 import { UserInfo } from "@/validators/user.validators";
-import { Expenses, sequelize, Trip, TripMembers, Users } from "../models";
+import {
+  Expenses,
+  Notifications,
+  sequelize,
+  Trip,
+  TripMembers,
+  Users,
+} from "../models";
 import { TripRepository } from "../repositories/TripRepository";
 import { TripEditType } from "../validators/trip.validator";
-import { TripMemberList } from "@/validators/tripMembers.validator";
-import { TripMemberRepository } from "@/repositories/TripMemberRepository";
 import { NotificationService } from "./NotificationService";
 import { NOTIFICATION_TYPE } from "@/validators/notification.validators";
+import { STATUS_TYPE } from "@/models/users.model";
+import { INVITE_STATUS_TYPE } from "@/models/tripMembers.model";
+import { TripMemberService } from "./TripMemberService";
 
 export const TripService = {
   getAllTrips: async (userId: number) => {
@@ -36,6 +44,7 @@ export const TripService = {
 
     return { message: "Successfully updated" };
   },
+
   createTrip: async (newTrip: TripEditType, userInfo: UserInfo) => {
     try {
       await sequelize.transaction(async (t) => {
@@ -47,49 +56,52 @@ export const TripService = {
           { transaction: t },
         );
 
-        const data = {
-          tripId: trip.tripId,
-          userId: userInfo.userId,
-          type: NOTIFICATION_TYPE.INFO,
-          message: `${userInfo.displayName}  you have created the trip ${trip.title}`,
-          isRead: false,
-        };
+        //This is to create notification
+        await NotificationService.createNotification(
+          {
+            tripId: trip.tripId,
+            userId: userInfo.userId,
+            type: NOTIFICATION_TYPE.INFO,
+            message: `${userInfo.displayName} you have created the trip ${trip.title}`,
+            isRead: false,
+          },
+          t,
+        );
 
-        await NotificationService.createNotification(data, t);
+        console.log("Trip has been created");
 
         //Creation of tripMembers
         if (trip.type === "GROUP" && newTrip.tripMemberList) {
-          for (let invite of newTrip.tripMemberList) {
-            //need to check if the users are in the list.
-            const member = await Users.findOne({
-              where: { email: invite.email },
-            });
-
-            if (!member)
-              throw new Error(`User with email ${invite.email} not found`);
-
-            await TripMembers.create(
-              {
-                tripId: trip.tripId,
-                userId: member?.userId,
-                status: "PENDING",
-              },
-              { transaction: t },
-            );
-
-            const data = {
+          const validMemberList = await TripMemberService.bulkCreateTripMembers(
+            {
+              tripMemberList: newTrip.tripMemberList,
               tripId: trip.tripId,
-              userId: Number(member?.userId),
+              invitedBy: userInfo.userId,
+            },
+            t,
+          );
+
+          console.log("TripMembers has been created");
+
+          //update Notification Table.
+          const invitationList = validMemberList.map((member) => {
+            return {
+              tripId: member.tripId,
+              userId: member.userId,
               type: NOTIFICATION_TYPE.INVITE,
               message: `${userInfo.displayName} has invited you to the trip ${trip.title}`,
               isRead: false,
             };
+          });
 
-            await NotificationService.createNotification(data, t);
-          }
+          await Notifications.bulkCreate(invitationList, { transaction: t });
+
+          console.log("Trip Notification has been created.");
+
+          return { message: "New trip created successfully" };
         }
 
-        return { message: "New trip created" };
+        return trip;
       });
     } catch (error: any) {
       console.log(error.message);

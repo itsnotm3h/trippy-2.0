@@ -47,10 +47,6 @@ export const TripRepository = {
       logging: true,
     });
   },
-  createTrip: async (data:TripType)=>{
-    return await Trip.create({...data})
-
-  },
   updateTrip: async (tripId: number, edits: TripEditType) => {
     return await Trip.update(edits, { where: { tripId } });
   },
