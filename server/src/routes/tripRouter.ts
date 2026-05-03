@@ -6,7 +6,7 @@ import {
   getTripById,
   getUserTrips,
   updateTrip,
-} from "../controllers/TripController";
+} from "@/models/Trips/TripController";
 
 const tripRouter = Router();
 

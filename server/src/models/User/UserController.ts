@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { loginCredentials, registrationSchema } from "../schema/authSchema";
-import { UserService } from "../services/UserService";
+import { loginCredentials, registrationSchema } from "../../schema/authSchema";
+import { UserService } from "./UserService";
 
 export const registerUser = async (req: Request, res: Response) => {
   try {

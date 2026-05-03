@@ -1,14 +1,14 @@
 import sequelize from "../config/db"; // Your sequelize instance
 
 // 1. Import your Model Classes
-import Users from "./users.model";
-import Trip from "./trip.model";
-import TripMembers from "./tripMembers.model";
-import Expenses from "./expenses.model";
-import ExpenseShare from "./expenseShare.model";
+import Users from "./User/users.model";
+import Expenses from "./Expenses/expenses.model";
+import ExpenseShare from "./ExpenseShare/expenseShare.model";
 import PersonalBudget from "./personalBudget.model";
 import Settlements from "./settlements.model";
-import Notifications from "./notifications.model";
+import Notifications from "./Notifications/notifications.model";
+import Trip from "./Trips/trip.model";
+import TripMembers from "./TripMembers/tripMembers.model";
 
 // 2. Put them in an object for easy access
 const models: any = {

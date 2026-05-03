@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { Trip, TripMembers, Users } from "../models";
 import AppError from "../utils/AppError";
-import { AuthRequest } from "../schema/authSchema";
+import { AuthRequest, TRIP_ROLE } from "../schema/authSchema";
 
 export const identifyUser = async (
   req: AuthRequest,
@@ -87,7 +87,11 @@ export const identifyTripRole = async (
         new AppError("Identity Check failed: You are not a member", 403),
       );
 
-    req.tripRole = isLeader ? "LEADER" : isMember ? "MEMBER" : "";
+    req.tripRole = isLeader
+      ? TRIP_ROLE.LEADER
+      : isMember
+        ? TRIP_ROLE.MEMBER
+        : TRIP_ROLE.NONE;
 
     next();
   } catch (err) {

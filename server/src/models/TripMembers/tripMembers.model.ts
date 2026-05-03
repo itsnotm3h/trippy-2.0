@@ -1,5 +1,5 @@
-import { Model, DataTypes, DecimalDataType } from "sequelize";
-import sequelize from "../config/db";
+import { Model, DataTypes} from "sequelize";
+import sequelize from "../../config/db";
 
 export enum INVITE_STATUS_TYPE {
   DECLINED = "DECLINED",

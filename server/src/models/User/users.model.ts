@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import sequelize from "../config/db";
+import sequelize from "../../config/db";
 
 export enum STATUS_TYPE {
   PENDING = "PENDING",

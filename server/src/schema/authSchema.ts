@@ -1,6 +1,12 @@
 import { z } from "zod";
 import { Request } from "express";
 
+export enum TRIP_ROLE {
+  MEMBER = "MEMBER",
+  LEADER = "LEADER",
+  NONE = "NONE",
+}
+
 // 1. The Zod Schema (The logic)
 export const AuthUserSchema = z.object({
   sub: z.string().optional(),
@@ -41,6 +47,7 @@ export const registrationSchema = z.object({
 export type AuthUser = z.infer<typeof AuthUserSchema>;
 export type Login = z.infer<typeof loginCredentials>;
 export type RegisterType = z.infer<typeof registrationSchema>;
+export type TripRoleType = z.infer<typeof TRIP_ROLE>;
 
 // 4. The Express Request Type (For your routes)
 export interface AuthRequest extends Request {
@@ -48,5 +55,5 @@ export interface AuthRequest extends Request {
     payload: AuthUser;
   };
   dbUser?: any;
-  tripRole?: string;
+  tripRole?: TripRoleType;
 }

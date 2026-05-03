@@ -1,5 +1,5 @@
 import { Model, DataTypes, DecimalDataType } from "sequelize";
-import sequelize from "../config/db";
+import sequelize from "../../config/db";
 
 class Trip extends Model {
   declare tripId: number;

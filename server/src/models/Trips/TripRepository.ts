@@ -1,6 +1,7 @@
+import { TripEditType } from "@/validators/trip.validator";
 import { Op, Sequelize, Transaction } from "sequelize";
-import { Trip, Users } from "../models";
-import { TripEditType, TripType } from "../validators/trip.validator";
+import Trip from "./trip.model";
+import Users from "../User/users.model";
 
 export const TripRepository = {
   createTrip: async (newTrip: TripEditType, t: Transaction) => {

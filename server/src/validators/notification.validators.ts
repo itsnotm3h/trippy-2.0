@@ -7,7 +7,7 @@ export enum NOTIFICATION_TYPE {
 }
 
 export const NotificationSchema = z.object({
-  tripId: z.coerce.number(),
+  tripId: z.coerce.number().optional(),
   userId: z.coerce.number(),
   type: z.enum(["INFO", "INVITE", "NEWUSER"]),
   message: z.string(),

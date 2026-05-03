@@ -1,19 +1,10 @@
 import { UserInfo } from "@/validators/user.validators";
-import {
-  Expenses,
-  Notifications,
-  sequelize,
-  Trip,
-  TripMembers,
-  Users,
-} from "../models";
-import { TripRepository } from "../repositories/TripRepository";
-import { TripEditType } from "../validators/trip.validator";
-import { NotificationService } from "./NotificationService";
 import { NOTIFICATION_TYPE } from "@/validators/notification.validators";
-import { STATUS_TYPE } from "@/models/users.model";
-import { INVITE_STATUS_TYPE } from "@/models/tripMembers.model";
-import { TripMemberService } from "./TripMemberService";
+import { TripMemberService } from "../TripMembers/TripMemberService";
+import { TripRepository } from "./TripRepository";
+import { TripEditType } from "@/validators/trip.validator";
+import { Expenses, sequelize, Trip } from "..";
+import { NotificationService } from "../Notifications/NotificationService";
 
 export const TripService = {
   getAllTrips: async (userId: number) => {
@@ -84,17 +75,15 @@ export const TripService = {
           console.log("TripMembers has been created");
 
           //update Notification Table.
-          const invitationList = validMemberList.map((member) => {
-            return {
-              tripId: member.tripId,
-              userId: member.userId,
-              type: NOTIFICATION_TYPE.INVITE,
-              message: `${userInfo.displayName} has invited you to the trip ${trip.title}`,
-              isRead: false,
-            };
-          });
-
-          await Notifications.bulkCreate(invitationList, { transaction: t });
+          await NotificationService.bulkCreateTripMemberNotification(
+            {
+              list: validMemberList,
+              displayName: userInfo.displayName,
+              tripTitle: trip.title,
+              tripId: trip.tripId,
+            },
+            t,
+          );
 
           console.log("Trip Notification has been created.");
 

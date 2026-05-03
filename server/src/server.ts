@@ -8,6 +8,7 @@ import cookieParser from "cookie-parser";
 import tripRouter from "./routes/tripRouter";
 import userRouter from "./routes/userRouter";
 import { COOKIE_SECRET_KEY } from "./config/env";
+import expensesRouter from "./routes/expensesRouter";
 
 const app = express();
 const PORT = 3000; // this port is for out api.
@@ -17,11 +18,11 @@ app.use(cors()); // Allows your React app (usually on port 3000 or 5173) to talk
 app.use(express.json()); // Allow server to read json.
 app.use(cookieParser(COOKIE_SECRET_KEY));
 
-
 app.use("/api/authenticate", userRouter);
 
 // Routes
 app.use("/api/trips", tripRouter);
+app.use("/api/expense", expensesRouter);
 
 // app.use((err: any, req: Request, res: Response, next: NextFunction) => {
 //   // If it's an AppError, use its status code; otherwise, default to 500

@@ -1,13 +1,12 @@
-import { sequelize, Trip, Users } from "@/models";
+import { sequelize, TripMembers, Users } from "@/models";
 import {
   TripMemberFormType,
   TripMemberListType,
-} from "../validators/tripMembers.validator";
-import { TripMemberRepository } from "@/repositories/TripMemberRepository";
-import { NotificationRepositry } from "@/repositories/NotificationRepository";
-import { STATUS_TYPE } from "@/models/users.model";
+} from "@/validators/tripMembers.validator";
+import { TripMemberRepository } from "./TripMemberRepository";
 import { Transaction } from "sequelize";
-import TripMembers, { INVITE_STATUS_TYPE } from "@/models/tripMembers.model";
+import { STATUS_TYPE } from "../User/users.model";
+import { INVITE_STATUS_TYPE } from "./tripMembers.model";
 
 const finalMessage = {
   PENDING: (invite: any) =>
@@ -29,8 +28,6 @@ export const TripMemberService = {
 
     if (inviteList.length <= 0)
       throw new Error("invitation list cannot be empty");
-
-    const currentTrip = await Trip.findByPk(inviteList[0].tripId);
 
     for (const invite of inviteList) {
       const { tripId, userId, status } = invite;
@@ -96,7 +93,7 @@ export const TripMemberService = {
     );
 
     //Return object with isNew, so that it can be used in the notificationService,
-    //to send email to new user for registration. 
+    //to send email to new user for registration.
 
     return validMemberList;
   },

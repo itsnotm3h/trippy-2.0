@@ -3,6 +3,11 @@ import countries from "i18n-iso-countries";
 import BigNumber from "bignumber.js";
 import { TripMemberFormSchema } from "./tripMembers.validator";
 
+export enum TRIP_TYPE {
+  SOLO = "SOLO",
+  GROUP = "GROUP",
+}
+
 export const TripIdSchema = z.object({
   tripId: z.coerce.number(),
 });
@@ -21,7 +26,7 @@ export const TripSchema = z.object({
     .string()
     .min(10, "INVALID_TITLE_LENGTH_SHORT")
     .max(150, "INVALID_TITLE_LENGTH_LONG"),
-  type: z.enum(["SOLO", "GROUP"]),
+  type: z.enum(TRIP_TYPE),
   country: z
     .string()
     .length(3, "INVALID_LENGTH")

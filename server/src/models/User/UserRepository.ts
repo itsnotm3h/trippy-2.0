@@ -1,5 +1,5 @@
-import { Users } from "../models";
-import { Login } from "../schema/authSchema";
+import { Users } from "..";
+import { Login } from "../../schema/authSchema";
 
 export const UserRepository = {
   findUser: async (login: Login) => {

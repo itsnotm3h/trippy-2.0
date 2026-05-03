@@ -43,13 +43,14 @@
     "bignumber.js": "^10.0.2",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.20",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
     "i18n-iso-countries": "^7.14.0",
     "jsonwebtoken": "^9.0.3",
     "mariadb": "^3.4.5",
     "mysql2": "^3.16.1",
-    "sequelize": "^6.37.7",
+    "sequelize": "^6.37.8",
     "zod": "^4.3.5"
   },
   "devDependencies": {

@@ -1,5 +1,6 @@
 import z from "zod";
 
+
 export const UserSchema = z.object({
     userId:z.coerce.number(),
     username:z.string(),

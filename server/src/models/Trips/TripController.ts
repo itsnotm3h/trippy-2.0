@@ -1,11 +1,11 @@
 import { Response } from "express";
-import { TripService } from "../services/TripService";
+import { TripService } from "./TripService";
+import { AuthRequest } from "@/schema/authSchema";
 import {
   PartialTripEditsSchema,
   TripIdSchema,
   TripSchema,
-} from "../validators/trip.validator";
-import { AuthRequest } from "../schema/authSchema";
+} from "@/validators/trip.validator";
 
 export const getUserTrips = async (req: AuthRequest, res: Response) => {
   try {

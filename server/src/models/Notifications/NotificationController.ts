@@ -1,5 +1,5 @@
 import { AuthRequest } from "@/schema/authSchema";
-import { NotificationService } from "@/services/NotificationService";
+import { NotificationService } from "@/models/Notifications/NotificationService";
 import { Response } from "express";
 
 export const getUserNotification = async (req: AuthRequest, res: Response) => {
