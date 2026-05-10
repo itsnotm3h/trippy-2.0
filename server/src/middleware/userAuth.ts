@@ -54,6 +54,9 @@ export const identifyUser = async (
   }
 };
 
+/***
+ * To use identifyTripRole, route has to include :tripId
+ */
 export const identifyTripRole = async (
   req: AuthRequest,
   res: Response,
@@ -64,7 +67,11 @@ export const identifyTripRole = async (
 
     const userId = req.dbUser.userId;
 
-    if (userId === undefined || tripId === undefined) {
+    if (tripId === undefined) {
+      return next(new AppError("Error tripId not found", 400));
+    }
+
+    if (userId === undefined) {
       return next(new AppError("Error authorised entry", 400));
     }
 

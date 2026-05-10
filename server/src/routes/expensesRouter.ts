@@ -10,6 +10,7 @@ const expensesRouter = Router();
 
 expensesRouter.use(checkJWT, identifyUser);
 expensesRouter.get("/:tripId", identifyTripRole, getAllExpenses); //Get expense information.
-expensesRouter.post("/", identifyTripRole, createExpenses); //
+expensesRouter.post("/create/:tripId", identifyTripRole, createExpenses); //
+expensesRouter.post("/update/:tripId", identifyTripRole, createExpenses); //
 
 export default expensesRouter;

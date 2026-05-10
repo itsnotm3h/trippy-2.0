@@ -1,11 +1,11 @@
-import { Model, DataTypes, DecimalDataType } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
 
 class ExpenseShare extends Model {
   declare shareId: number;
   declare expenseId: number;
   declare userId: number;
-  declare shareAmount: DecimalDataType;
+  declare shareAmount: number;
   static associate(models: any) {
     ExpenseShare.belongsTo(models.Expenses, {
       foreignKey: "expenseId",
@@ -37,10 +37,17 @@ ExpenseShare.init(
       type: DataTypes.DECIMAL(10, 2),
       field: "share_amount",
     },
+    createdAt: {
+      type: DataTypes.DATE,
+    },
+    updatedAt: {
+      type: DataTypes.DATE,
+    },
   },
   {
     sequelize,
-    tableName: "expense_share",
+    tableName: "expense_shares",
+    underscored: true,
   },
 );
 

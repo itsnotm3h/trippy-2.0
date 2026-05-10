@@ -1,16 +1,20 @@
-import { Model, DataTypes, DecimalDataType } from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
+import {
+  EXPENSE_CATEGORY,
+  EXPENSE_TYPE,
+} from "@/validators/expenses.validator";
 
 class Expenses extends Model {
   declare expenseId: number;
   declare payerId: number;
   declare tripId: number;
-  declare amount: DecimalDataType;
+  declare amount: number;
   declare description: string;
   declare comments: string;
-  declare category: string;
-  declare type: string;
-  declare expenseDate: Date;
+  declare category: EXPENSE_CATEGORY;
+  declare type: EXPENSE_TYPE;
+  declare expenseDate: string;
   static associate(models: any) {
     Expenses.belongsTo(models.Trip, { foreignKey: "tripId", as: "trip" });
     Expenses.belongsTo(models.Users, {
@@ -56,18 +60,11 @@ Expenses.init(
       allowNull: true,
     },
     category: {
-      type: DataTypes.ENUM(
-        "Activities",
-        "Shopping",
-        "Transport",
-        "Food",
-        "Stay",
-        "Misc",
-      ),
+      type: DataTypes.ENUM(...Object.values(EXPENSE_CATEGORY)),
       allowNull: false,
     },
     type: {
-      type: DataTypes.ENUM("Solo", "Group"),
+      type: DataTypes.ENUM(...Object.values(EXPENSE_TYPE)),
       allowNull: false,
     },
     expenseDate: {

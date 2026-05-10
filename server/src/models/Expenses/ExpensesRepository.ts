@@ -2,7 +2,7 @@ import { ExpensesCreateType } from "@/validators/expenses.validator";
 import Expenses from "./expenses.model";
 import { Transaction } from "sequelize";
 
-export const ExpensesRepositry = {
+export const ExpensesRepository = {
   getAllExpenses: async (tripId: number) => {
     return await Expenses.findAll({ where: { tripId }, logging: console.log });
   },

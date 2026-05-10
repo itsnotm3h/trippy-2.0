@@ -1,5 +1,6 @@
 import { Model, DataTypes, DecimalDataType } from "sequelize";
 import sequelize from "../../config/db";
+import { TRIP_TYPE } from "@/validators/trip.validator";
 
 class Trip extends Model {
   declare tripId: number;
@@ -53,7 +54,7 @@ Trip.init(
       allowNull: false,
     },
     type: {
-      type: DataTypes.STRING,
+      type: DataTypes.ENUM(...Object.values(TRIP_TYPE)),
       allowNull: false,
     },
     country: {
