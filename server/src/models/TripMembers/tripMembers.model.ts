@@ -1,4 +1,4 @@
-import { Model, DataTypes} from "sequelize";
+import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
 
 export enum INVITE_STATUS_TYPE {
@@ -12,7 +12,10 @@ class TripMembers extends Model {
   declare userId: number;
   declare status: INVITE_STATUS_TYPE;
   static associate(models: any) {
-    TripMembers.belongsTo(models.Users, { foreignKey: "userId", as: "users" });
+    TripMembers.belongsTo(models.Users, {
+      foreignKey: "userId",
+      as: "tripMembers",
+    });
     TripMembers.belongsTo(models.Trip, { foreignKey: "tripId", as: "trip" });
   }
 }

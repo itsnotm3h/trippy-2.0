@@ -3,7 +3,9 @@ import { checkJWT } from "../middleware/auth";
 import { identifyTripRole, identifyUser } from "../middleware/userAuth";
 import {
   createExpenses,
+  deleteExpenses,
   getAllExpenses,
+  updateExpenses,
 } from "@/models/Expenses/ExpensesController";
 
 const expensesRouter = Router();
@@ -11,6 +13,7 @@ const expensesRouter = Router();
 expensesRouter.use(checkJWT, identifyUser);
 expensesRouter.get("/:tripId", identifyTripRole, getAllExpenses); //Get expense information.
 expensesRouter.post("/create/:tripId", identifyTripRole, createExpenses); //
-expensesRouter.post("/update/:tripId", identifyTripRole, createExpenses); //
+expensesRouter.post("/update/:tripId", identifyTripRole, updateExpenses); //
+expensesRouter.post("/delete/:tripId/:expenseId", identifyTripRole, deleteExpenses); //
 
 export default expensesRouter;

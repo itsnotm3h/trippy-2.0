@@ -77,8 +77,8 @@ Expenses.init(
     sequelize,
     tableName: "expenses",
     timestamps: true,
-    updatedAt: false,
     createdAt: "created_at",
+    updatedAt: "updated_at",
   },
 );
 

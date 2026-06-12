@@ -12,8 +12,8 @@ export const ShareRequestSchema = z.object({
 });
 
 export const SharingListUpdate = z.object({
-  shareId: z.coerce.number(),
-  expenseId: z.coerce.number(),
+  shareId: z.coerce.number().optional(),
+  expenseId: z.coerce.number().optional(),
   userId: z.coerce.number(),
   shareAmount: z.number(),
 });

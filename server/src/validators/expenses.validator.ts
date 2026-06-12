@@ -37,24 +37,56 @@ export const ExpensesCreateSchema = z
   })
   .refine(
     (data) => {
-      return data.share.find((item) => item.userId === data.payerId);
+      if (data.type === EXPENSE_TYPE.GROUP)
+        return data.share.find((item) => item.userId === data.payerId);
+      return true;
     },
     { message: "Payer must be included in the sharedList." },
   )
   .refine(
     (data) => {
-      const totalShare = data.share.reduce(
-        (acc, curr) => acc + curr.shareAmount,
-        0,
-      );
-      return totalShare == data.amount;
+      if (data.type === EXPENSE_TYPE.GROUP) {
+        const totalShare = data.share.reduce(
+          (acc, curr) => acc + curr.shareAmount,
+          0,
+        );
+        return totalShare == data.amount;
+      }
+
+      return true;
     },
     { message: "Share amount must be equal to expense amount." },
+  )
+  .refine(
+    (data) => {
+      if (data.type === EXPENSE_TYPE.GROUP && data.share.length > 1) {
+        return data.share.filter((item) => item.shareAmount <= 0).length <= 1;
+      }
+      return true;
+    },
+    { message: "Invalid shared distribution." },
+  )
+  .refine(
+    (data) => {
+      if (data.type === EXPENSE_TYPE.GROUP && data.share.length > 1) {
+        const user = data.share.find((item) => item.userId == data.payerId);
+
+        return user ? user.shareAmount < data.amount : true;
+      }
+      return true;
+    },
+    { message: "Payer cannot pay for the entire amount of a group expense." },
   );
 
 export const ExpensesUpdateSchema = ExpensesCreateSchema.safeExtend({
   expenseId: z.coerce.number(),
   share: z.array(SharingListUpdate),
+});
+
+export const ExpenseDeleteSchema = z.object({
+  tripId: z.coerce.number(),
+  userId: z.coerce.number(),
+  expenseId: z.coerce.number(),
 });
 
 export const ExpensesSchema = z.object({
@@ -80,3 +112,4 @@ export const ExpensesSchema = z.object({
 export type ExpenseType = z.infer<typeof ExpensesSchema>;
 export type ExpensesCreateType = z.infer<typeof ExpensesCreateSchema>;
 export type ExpenseUpdateType = z.infer<typeof ExpensesUpdateSchema>;
+export type ExpenseDeleteType = z.infer<typeof ExpenseDeleteSchema>;

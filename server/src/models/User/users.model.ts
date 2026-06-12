@@ -1,5 +1,6 @@
 import { Model, DataTypes } from "sequelize";
 import sequelize from "../../config/db";
+import TripMembers from "../TripMembers/tripMembers.model";
 
 export enum STATUS_TYPE {
   PENDING = "PENDING",
@@ -54,6 +55,7 @@ class Users extends Model {
       otherKey: "tripId", // The key in TripMembers pointing to Trip
       as: "memberOfTrips",
     });
+    Users.hasMany(TripMembers, { foreignKey: "userId", as: "tripMembers" });
   }
 }
 
