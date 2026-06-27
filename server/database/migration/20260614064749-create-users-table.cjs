@@ -4,9 +4,8 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.sequelize.query(` 
-    CREATE TABLE IF NOT EXIST users (
+    CREATE TABLE IF NOT EXISTS users (
     user_id INT(11) NOT NULL AUTO_INCREMENT,
-    username VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
     first_name VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
     last_name VARCHAR(50) NOT NULL COLLATE 'latin1_swedish_ci',
     password VARCHAR(255) NOT NULL COLLATE 'latin1_swedish_ci',

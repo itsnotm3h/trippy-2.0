@@ -10,8 +10,10 @@ import {
 export const getUserTrips = async (req: AuthRequest, res: Response) => {
   try {
     const { userId } = req.dbUser;
-    const trips = await TripService.getAllTrips(userId);
+    const search = req.query.search as string ?? "";
+    const trips = await TripService.getAllTrips(userId,search);
     res.status(200).json(trips);
+
   } catch (error) {
     res.status(500).json({ message: "Error fetching trips", error });
   }

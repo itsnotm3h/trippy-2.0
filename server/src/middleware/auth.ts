@@ -10,16 +10,14 @@ export const checkJWT = (
   next: NextFunction,
 ) => {
   try {
-    // const authHeader = req.headers["authorization"];
+    const authHeader = req.headers["authorization"];
 
     // //Check if header exist, and also to make sure that type of header is correct.
-    // if (!authHeader || !authHeader.startsWith("Bearer")) {
-    //   return res.status(401).json({ message: "Unauthorized: Missing Token" });
-    // }
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
+      return res.status(401).json({ message: "Unauthorized: Missing Token" });
+    }
 
-    // const token = authHeader && authHeader.split(" ")[1];
-
-    const token = req.signedCookies.token;
+    const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) return res.status(401).json({ message: "No Token provided" });
 

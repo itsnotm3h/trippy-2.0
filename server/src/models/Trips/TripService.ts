@@ -7,8 +7,8 @@ import { Expenses, sequelize, Trip } from "..";
 import { NotificationService } from "../Notifications/NotificationService";
 
 export const TripService = {
-  getAllTrips: async (userId: number) => {
-    return await TripRepository.findAll(userId);
+  getAllTrips: async (userId: number,search:string) => {
+    return await TripRepository.findAll(userId,search);
   },
   getTripById: async (tripId: number) => {
     return await TripRepository.findByTripId(tripId);

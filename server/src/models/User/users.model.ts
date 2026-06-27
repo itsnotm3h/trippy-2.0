@@ -16,6 +16,7 @@ class Users extends Model {
   declare displayName: string;
   declare status: STATUS_TYPE;
   declare invitedBy: string;
+  declare referalCode:string;
   static associate(models: any) {
     Users.hasMany(models.Expenses, {
       foreignKey: "payerId",
@@ -67,10 +68,6 @@ Users.init(
       autoIncrement: true,
       primaryKey: true,
     },
-    username: {
-      type: DataTypes.STRING,
-      field: "username",
-    },
     firstName: {
       type: DataTypes.STRING,
       field: "first_name",
@@ -102,6 +99,10 @@ Users.init(
       type: DataTypes.INTEGER,
       field: "invited_by",
       allowNull: true,
+    },
+    referalCode: {
+      type: DataTypes.STRING,
+      allowNull: true
     },
     status: {
       type: DataTypes.ENUM(...Object.values(STATUS_TYPE)),

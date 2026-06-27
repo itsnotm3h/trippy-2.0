@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { Trip, TripMembers, Users } from "../models";
-import AppError from "../utils/AppError";
 import { AuthRequest, TRIP_ROLE } from "../schema/authSchema";
+import { AppError } from "@/utils/AppError";
 
 export const identifyUser = async (
   req: AuthRequest,

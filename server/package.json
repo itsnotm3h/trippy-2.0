@@ -11,14 +11,14 @@
     "lint": "eslint . --ext .ts",
     "test": "cross-env NODE_ENV=test jest --runInBand",
     "test:coverage": "cross-env NODE_ENV=test jest --runInBand --coverage",
-    "migrate:make": "sequelize migration:generate --name",
-    "migrate:up": "sequelize db:migrate",
-    "migrate:down": "sequelize db:migrate:undo",
-    "migrate:reset": "sequelize db:migrate:undo:all",
-    "migrate:status": "sequelize db:migrate:status",
-    "seed:make": "sequelize seed:generate --name",
-    "seed:run": "sequelize db:seed:all",
-    "seed:down": "sequelize db:seed:undo:all"
+    "migrate:make": "npx sequelize-cli migration:generate --name",
+    "migrate:up": "npx sequelize-cli db:migrate",
+    "migrate:down": "npx sequelize-cli db:migrate:undo",
+    "migrate:reset": "npx sequelize-cli db:migrate:undo:all",
+    "migrate:status": "npx sequelize-cli db:migrate:status",
+    "seed:make": "npx sequelize-cli seed:generate --name",
+    "seed:run": "npx sequelize-cli db:seed:all",
+    "seed:down": "npx sequelize-cli db:seed:undo:all"
   },
   "jest": {
     "preset": "ts-jest",
@@ -54,6 +54,7 @@
     "dayjs": "^1.11.20",
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
+    "express-useragent": "^2.2.0",
     "i18n-iso-countries": "^7.14.0",
     "jsonwebtoken": "^9.0.3",
     "mariadb": "^3.4.5",
@@ -71,15 +72,17 @@
     "@types/node": "^25.0.9",
     "@types/supertest": "^7.2.0",
     "cross-env": "^10.1.0",
-    "jest": "^30.3.0",
+    "jest": "^30.4.2",
     "sequelize-cli": "^6.6.5",
     "sqlite3": "^6.0.1",
     "supertest": "^7.2.2",
-    "ts-jest": "^29.4.9",
+    "ts-jest": "^29.4.11",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "overrides": {
-    "tar": "^7.5.4"
+    "tar": "^7.5.4",
+    "uuid": "^11.1.1"
+  
   }
 }

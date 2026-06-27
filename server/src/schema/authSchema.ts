@@ -21,10 +21,6 @@ export const loginCredentials = z.object({
 });
 
 export const registrationSchema = z.object({
-  username: z
-    .string()
-    .min(5, "must be greater than 5 chars")
-    .max(16, "cannot be more than 16 chars"),
   firstName: z
     .string()
     .min(5, "must be greater than 5 chars")

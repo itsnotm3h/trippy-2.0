@@ -7,6 +7,7 @@ import { TripMemberRepository } from "./TripMemberRepository";
 import { Transaction } from "sequelize";
 import { STATUS_TYPE } from "../User/users.model";
 import { INVITE_STATUS_TYPE } from "./tripMembers.model";
+import { generateReferralCode } from "@/utils/generateReferralCode";
 
 const finalMessage = {
   PENDING: (invite: any) =>
@@ -62,7 +63,10 @@ export const TripMemberService = {
     //Map the object for bulk approval.
     const validMemberList = await Promise.all(
       //Find a member in the user list, if does not exist it will create a dummy user.
+      
       request.tripMemberList?.map(async (data: any) => {
+        const code = generateReferralCode();
+
         const [member, created] = await Users.findOrCreate({
           where: { email: data.email },
           defaults: {
@@ -75,6 +79,7 @@ export const TripMemberService = {
             email: data.email,
             invitedBy: request.invitedBy,
             status: STATUS_TYPE.PENDING,
+            referalCode:code
           },
         });
 
@@ -94,7 +99,6 @@ export const TripMemberService = {
 
     //Return object with isNew, so that it can be used in the notificationService,
     //to send email to new user for registration.
-
     return validMemberList;
   },
 };

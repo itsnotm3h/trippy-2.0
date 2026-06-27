@@ -2,13 +2,39 @@ import { TripEditType } from "@/validators/trip.validator";
 import { Op, Sequelize, Transaction } from "sequelize";
 import Trip from "./trip.model";
 import Users from "../User/users.model";
+import { title } from "node:process";
 
 export const TripRepository = {
   createTrip: async (newTrip: TripEditType, t: Transaction) => {
-    return await Trip.create({ ...newTrip }, { transaction: t });
+    return Trip.create({ ...newTrip }, { transaction: t });
   },
-  findAll: async (userId: number) => {
-    return await Trip.findAll({
+  findAll: async (userId: number, search: string) => {
+
+    const searchTerm = search?.trim().slice(0, 100) ?? "";
+
+    const searchCondition = searchTerm ? [{
+
+      [Op.or]: [
+        {
+          title: {
+            [Op.like]:
+              `%${searchTerm}%`,
+          },
+        },
+
+        {
+          country: {
+            [Op.like]:
+              `%${searchTerm}%`,
+          },
+        },
+      ]
+      
+      }] : []
+
+
+    return Trip.findAll({
+      subQuery: false,
       include: [
         {
           model: Users,
@@ -18,20 +44,29 @@ export const TripRepository = {
         },
       ],
       where: {
-        [Op.or]: [
-          { leaderId: userId },
-          {
-            [Op.and]: [
-              { "$members.user_id$": userId },
-              { "$members.TripMembers.status$": "Accepted" },
-            ],
-          },
+        [Op.and]: [{
+
+          [Op.or]: [
+            { leaderId: userId },
+            {
+              [Op.and]: [
+                { "$members.user_id$": userId },
+                { "$members.TripMembers.status$": "Accepted" },
+              ],
+            },
+
+          ]
+        },
+
+        ...searchCondition
+
         ],
+
       },
     });
   },
   findByTripId: async (tripId: number) => {
-    return await Trip.findOne({
+    return Trip.findOne({
       where: { tripId },
       include: [
         {
