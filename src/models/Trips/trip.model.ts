@@ -36,8 +36,10 @@ class Trip extends Model {
       through: models.TripMembers,
       foreignKey: "tripId",
       otherKey: "userId",
-      as: "members",
+      as: "tripMemberList",
     });
+
+    //Trip.hasMany(models.TripMembers, { foreignKey: "tripId", as: "tripMembers" });
   }
 }
 

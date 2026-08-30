@@ -54,7 +54,15 @@ Notifications.init(
     timestamps: true,
     updatedAt: false,
     createdAt: "created_at",
+    indexes: [
+    {
+      name: 'unique_notification_per_member',
+      unique: true,
+      fields: ['userId', 'tripId','type','message'] 
+    }
+  ]
   },
+
 );
 
 export default Notifications;

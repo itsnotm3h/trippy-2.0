@@ -1,7 +1,8 @@
-import { Response } from "express";
+import { NextFunction, Response } from "express";
 import { TripService } from "./TripService";
 import { AuthRequest } from "@/schema/authSchema";
 import {
+  DeleteTripSchema,
   PartialTripEditsSchema,
   TripIdSchema,
   TripSchema,
@@ -11,7 +12,7 @@ export const getUserTrips = async (req: AuthRequest, res: Response) => {
   try {
     const { userId } = req.dbUser;
     const search = req.query.search as string ?? "";
-    const trips = await TripService.getAllTrips(userId,search);
+    const trips = await TripService.getAllTrips(userId, search);
     res.status(200).json(trips);
 
   } catch (error) {
@@ -43,10 +44,12 @@ export const getTripById = async (req: AuthRequest, res: Response) => {
  * @param req the request
  * @param res the response
  */
-export const updateTrip = async (req: AuthRequest, res: Response) => {
+export const updateTrip = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const { tripId } = TripIdSchema.parse({ ...req.params });
     const tripRole = req.tripRole ?? "";
+    const userInfo = req.dbUser ?? "";
+
 
     //Only leaders can make changes to trip setting.
     if (tripRole !== "LEADER")
@@ -58,31 +61,28 @@ export const updateTrip = async (req: AuthRequest, res: Response) => {
         .status(401)
         .json({ message: "No field provided for updates." });
 
-    const validate = PartialTripEditsSchema.safeParse({ ...req.body });
+    // const validate = PartialTripEditsSchema.safeParse({ ...req.body, leaderIs:true });
 
-    if (!validate.success) {
-      return res
-        .status(400)
-        .json({ message: validate.error.message.toString() });
-    }
+    // if (!validate.success) {
+    //   console.error("Validation Failed")
+    //   return res
+    //     .status(400)
+    //     .json({ message: validate.error.message.toString() });
+    // }
 
-    const edits = validate.data;
-    const result = await TripService.updateTrip(tripId, edits);
+    // const edits = validate.data;
+    const result = await TripService.updateTrip(tripId, { ...req.body, leaderIs: true }, userInfo);
 
     res.status(200).json({
-      message: `${result.message} Trip(id:${tripId})`,
+      message: `${result.message}`,
     });
-  } catch (error) {
-    console.log(error);
-    if (error instanceof Error) {
-      return res.status(400).json({ message: error.message });
-    }
 
-    res.status(500).json({ message: "Unexpected Error" });
+  } catch (error) {
+    next(error);
   }
 };
 
-export const createTrip = async (req: AuthRequest, res: Response) => {
+export const createTrip = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const userInfo = req.dbUser ?? "";
     const newTrip = TripSchema.safeParse({
@@ -91,15 +91,39 @@ export const createTrip = async (req: AuthRequest, res: Response) => {
     });
 
     if (!newTrip.success) {
+      console.log(newTrip.error.message)
       return res
         .status(400)
-        .json({ message: newTrip.error.message.toString() });
+        .json({ message: newTrip.error.message });
     }
 
     const result = await TripService.createTrip(newTrip.data, userInfo);
+
+    console.log(result);
+
     res.status(200).json({ result });
   } catch (error: any) {
-    console.log(error.message);
-    res.status(500).json({ message: "Unexpected Error" });
+    next(error)
+  }
+};
+
+export const deleteTrip = async (req: AuthRequest, res: Response, next: NextFunction) => {
+  try {
+    const tripRole = req.tripRole ?? "";
+    const userInfo = req.dbUser ?? "";
+
+
+    if (tripRole !== "LEADER")
+      return res.status(401).json({ message: "Unauthorised to make changes" });
+
+    const request = DeleteTripSchema.parse({
+      ...req.body,
+    });
+
+    const result = await TripService.deleteTrip(request.tripId,userInfo.displayName);
+    res.status(200).json({ result });
+
+  } catch (error: any) {
+    next(error);
   }
 };

@@ -3,6 +3,7 @@ import { checkJWT } from "../middleware/auth";
 import { identifyTripRole, identifyUser } from "../middleware/userAuth";
 import {
   createTrip,
+  deleteTrip,
   getTripById,
   getUserTrips,
   updateTrip,
@@ -17,5 +18,6 @@ tripRouter.post("", createTrip); // Create Trip
 tripRouter.param("tripId", identifyTripRole); // This will use the middleware whenever the params has tripId.
 tripRouter.get("/:tripId", getTripById); //Get Trip information.
 tripRouter.patch("/update/:tripId", updateTrip); //Only the leader can edit the trip setting.
+tripRouter.patch("/delete/:tripId", deleteTrip); //Only the leader can edit the trip setting.
 
 export default tripRouter;

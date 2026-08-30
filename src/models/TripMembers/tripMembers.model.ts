@@ -14,7 +14,7 @@ class TripMembers extends Model {
   static associate(models: any) {
     TripMembers.belongsTo(models.Users, {
       foreignKey: "userId",
-      as: "tripMembers",
+      as: "members",
     });
     TripMembers.belongsTo(models.Trip, { foreignKey: "tripId", as: "trip" });
   }

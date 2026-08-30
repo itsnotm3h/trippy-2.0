@@ -1,8 +1,8 @@
 import { TripEditType } from "@/validators/trip.validator";
 import { Op, Sequelize, Transaction } from "sequelize";
-import Trip from "./trip.model";
-import Users from "../User/users.model";
-import { title } from "node:process";
+import { TripMembers, Trip, Users } from "@/models";
+
+
 
 export const TripRepository = {
   createTrip: async (newTrip: TripEditType, t: Transaction) => {
@@ -29,8 +29,8 @@ export const TripRepository = {
           },
         },
       ]
-      
-      }] : []
+
+    }] : []
 
 
     return Trip.findAll({
@@ -38,9 +38,11 @@ export const TripRepository = {
       include: [
         {
           model: Users,
-          as: "members",
-          attributes: [], //So that no attributes will be shown
-          through: { attributes: [] }, // Set this to empty so the nested object disappears
+          as: "tripMemberList",
+          attributes: ["displayName", "email", ["status", "accountStatus"],
+            [Sequelize.literal("`tripMemberList->TripMembers`.`status`"), "status"],
+          ], 
+          through: {attributes:[]}, // Set this to empty so the nested object disappears
         },
       ],
       where: {
@@ -50,8 +52,8 @@ export const TripRepository = {
             { leaderId: userId },
             {
               [Op.and]: [
-                { "$members.user_id$": userId },
-                { "$members.TripMembers.status$": "Accepted" },
+                { "$tripMemberList.user_id$": userId },
+                // { "$tripMembers.TripMembers.status$": "Accepted" },
               ],
             },
 
@@ -63,6 +65,7 @@ export const TripRepository = {
         ],
 
       },
+      order: [['createdAt', 'DESC']],
     });
   },
   findByTripId: async (tripId: number) => {
@@ -71,7 +74,7 @@ export const TripRepository = {
       include: [
         {
           model: Users,
-          as: "members",
+          as: "tripMemberList",
           attributes: [
             "userId",
             "displayName",
@@ -83,7 +86,7 @@ export const TripRepository = {
       logging: true,
     });
   },
-  updateTrip: async (tripId: number, edits: TripEditType) => {
-    return await Trip.update(edits, { where: { tripId } });
+  updateTrip: async (tripId: number, edits: TripEditType, t:Transaction) => {
+    return await Trip.update(edits, { where: { tripId}, transaction:t });
   },
 };

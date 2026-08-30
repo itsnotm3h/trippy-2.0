@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { loginCredentials, registrationSchema } from "../../schema/authSchema";
 import { UserService } from "./UserService";
 import { getDeviceInfo } from "@/utils/getDeviceInfo";
-import { handleError } from "@/utils/handleError";
+import { nextTick } from "node:process";
 
-export const registerUser = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response, next:NextFunction) => {
   try {
     const register = registrationSchema.parse(req.body);
     const deviceInfo = getDeviceInfo(req);
@@ -30,12 +30,12 @@ export const registerUser = async (req: Request, res: Response) => {
 
       
   } catch (error: any) {
-    return handleError(error, res);
 
+    next(error)
   }
 };
 
-export const loginUser = async (req: Request, res: Response) => {
+export const loginUser = async (req: Request, res: Response, next:NextFunction) => {
   try {
     const login = loginCredentials.parse(req.body);
 
@@ -63,11 +63,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error(error); // log internally
-    return handleError(error, res);
+    next(error)
   }
 };
 
-export const logoutUser = async (req: Request, res: Response) => {
+export const logoutUser = async (req: Request, res: Response, next:NextFunction) => {
   try {
 
     const refreshToken = req.signedCookies.refreshToken;
@@ -88,12 +88,12 @@ export const logoutUser = async (req: Request, res: Response) => {
 
   } catch (error) {
     console.error(error);
-    return handleError(error, res);
+    next(error)
   }
 
 };
 
-export const refreshToken = async (req: Request, res: Response) => {
+export const refreshToken = async (req: Request, res: Response, next:NextFunction) => {
   try {
     const refreshToken = req.signedCookies.refreshToken;
 
@@ -118,7 +118,8 @@ export const refreshToken = async (req: Request, res: Response) => {
 
     });
 
-    return handleError(error, res);
+    next(error)
+
 
 
   }

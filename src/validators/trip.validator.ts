@@ -2,6 +2,7 @@ import { z } from "zod";
 import countries from "i18n-iso-countries";
 import BigNumber from "bignumber.js";
 import { TripMemberFormSchema } from "./tripMembers.validator";
+import dayjs from "dayjs";
 
 export enum TRIP_TYPE {
   SOLO = "SOLO",
@@ -24,12 +25,12 @@ export const TripSchema = z.object({
   // tripId: z.coerce.number(),
   title: z
     .string()
-    .min(10, "INVALID_TITLE_LENGTH_SHORT")
+    .min(5, "INVALID_TITLE_LENGTH_SHORT")
     .max(150, "INVALID_TITLE_LENGTH_LONG"),
   type: z.enum(TRIP_TYPE),
   country: z
     .string()
-    .length(3, "INVALID_LENGTH")
+    .length(2, "INVALID_LENGTH")
     .transform((val) => val.toUpperCase())
     .refine(
       (val) => {
@@ -37,20 +38,24 @@ export const TripSchema = z.object({
       },
       { message: "INVALID_COUNTRY_CODE" },
     ),
-  tripMemberList: z.array(TripMemberFormSchema),
+  tripMemberList: z.array(TripMemberFormSchema).nullable(),
   leaderId: z.coerce.number(),
-  currencyRate: z
-    .number()
+  currencyRate: z.coerce.number()
     .positive("NEGATIVE_VALUE")
     .refine(
       (val) => {
         return new BigNumber(val).isFinite();
       },
       { message: "INVALID_RATE" },
-    )
-    .transform((val) => new BigNumber(val).toFixed(3)),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date(),
+    ).transform((val) => {
+      return Number(new BigNumber(val).toFixed(3))
+    }),
+  startDate: z.coerce.date().transform((val)=>{
+    return dayjs(val).format("YYYY-MM-DD")
+  }),
+  endDate: z.coerce.date().transform((val)=>{
+    return dayjs(val).format("YYYY-MM-DD")
+  }),
   isActive: z.boolean("INVALID_VALUE"),
   isDeleted: z.boolean("INVALID_VALUE"),
 });
@@ -58,21 +63,20 @@ export const TripSchema = z.object({
 export const PartialTripEditsSchema = TripSchema.partial()
   .refine(
     (data) => {
-      //To cater to if the data does not exist for both.
-      if (!data.startDate || !data.endDate)
-        return !data.startDate && !data.endDate;
-    },
-    { message: "DATES_ARE_INCOMPLETE" },
-  )
-  .refine(
-    (data) => {
       if (data.startDate && data.endDate) {
+        if(data.startDate == data.endDate) return true;
+        
         return data.startDate < data.endDate;
       }
       return true;
     },
     { message: "START_DATE_LATER" },
   );
+
+
+  export const DeleteTripSchema = z.object({
+    tripId:z.number(),
+  })
 
 export type TripEditType = z.infer<typeof PartialTripEditsSchema>;
 export type TripType = z.infer<typeof TripSchema>;

@@ -2,12 +2,15 @@ import { sequelize, TripMembers, Users } from "@/models";
 import {
   TripMemberFormType,
   TripMemberListType,
+  TripMemberListUpdateType,
+  TripMemberType,
 } from "@/validators/tripMembers.validator";
 import { TripMemberRepository } from "./TripMemberRepository";
 import { Transaction } from "sequelize";
 import { STATUS_TYPE } from "../User/users.model";
 import { INVITE_STATUS_TYPE } from "./tripMembers.model";
 import { generateReferralCode } from "@/utils/generateReferralCode";
+import { AppError } from "@/utils/AppError";
 
 const finalMessage = {
   PENDING: (invite: any) =>
@@ -18,32 +21,57 @@ const finalMessage = {
 } as const;
 
 export const TripMemberService = {
-  upsertTripMember: async (
-    inviteList: TripMemberListType,
-    displayName: string,
+  upsertTripMember: async ({
+    inviteList,
+    tripId,
+    invitedBy,
+    txn
+  }:{
+    inviteList: TripMemberListUpdateType[],
+    tripId:number,
+    invitedBy:number,
+    txn?: Transaction,
+  }
+    // displayName: string,
   ) => {
-    const finalResult = {
-      successList: [] as number[],
-      failedIdList: [] as { userId: number; error: string }[],
-    };
+    const finalResult =  [] as TripMemberType[];
 
     if (inviteList.length <= 0)
       throw new Error("invitation list cannot be empty");
 
+
     for (const invite of inviteList) {
-      const { tripId, userId, status } = invite;
+      const { email, status } = invite;
+      const code = generateReferralCode();
+
+       const [member, created] = await Users.findOrCreate({
+          where: { email },
+          defaults: {
+            displayName: "-",
+            password: "-",
+            firstName: "-",
+            lastName: "-",
+            username: "-",
+            authId: "-",
+            email: email,
+            invitedBy: invitedBy,
+            status: STATUS_TYPE.PENDING,
+            referalCode:code
+          },
+        });
+
+        
+        const {userId} = member;
+        
       try {
-        await sequelize.transaction(async (t) => {
-          await TripMemberRepository.upsertInvites({
+          const [member, _] = await TripMemberRepository.upsertInvites({
             tripId,
             userId,
             status,
-          });
+          },txn);
+          finalResult.push({...member.dataValues});
 
-          finalResult.successList.push(userId);
-        });
       } catch (error: any) {
-        finalResult.failedIdList.push({ userId, error: error.message });
         console.log(error.message);
       }
     }
@@ -66,7 +94,6 @@ export const TripMemberService = {
       
       request.tripMemberList?.map(async (data: any) => {
         const code = generateReferralCode();
-
         const [member, created] = await Users.findOrCreate({
           where: { email: data.email },
           defaults: {
